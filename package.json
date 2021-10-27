@@ -1,6 +1,7 @@
 {
   "name": "server",
   "version": "1.0.0",
+  "homepage": "https://free-chat-1.herokuapp.com/",
   "description": "production ready server",
   "main": "server.js",
   "engines": {

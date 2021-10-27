@@ -38,6 +38,7 @@ app.use((err, req, res, next) => {
     next();
 });
 
+console.log('process.env.NODE_ENV:', process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.resolve(__dirname, 'build')))
     console.log(__dirname);
