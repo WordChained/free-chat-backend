@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/free-chat/static/css/main.a60b3377.chunk.css",
+    "main.js": "/free-chat/static/js/main.61f54820.chunk.js",
+    "main.js.map": "/free-chat/static/js/main.61f54820.chunk.js.map",
+    "runtime-main.js": "/free-chat/static/js/runtime-main.710c26f5.js",
+    "runtime-main.js.map": "/free-chat/static/js/runtime-main.710c26f5.js.map",
+    "static/js/2.84870de2.chunk.js": "/free-chat/static/js/2.84870de2.chunk.js",
+    "static/js/2.84870de2.chunk.js.map": "/free-chat/static/js/2.84870de2.chunk.js.map",
+    "static/js/3.4d07e792.chunk.js": "/free-chat/static/js/3.4d07e792.chunk.js",
+    "static/js/3.4d07e792.chunk.js.map": "/free-chat/static/js/3.4d07e792.chunk.js.map",
+    "index.html": "/free-chat/index.html",
+    "static/css/main.a60b3377.chunk.css.map": "/free-chat/static/css/main.a60b3377.chunk.css.map",
+    "static/js/2.84870de2.chunk.js.LICENSE.txt": "/free-chat/static/js/2.84870de2.chunk.js.LICENSE.txt",
+    "static/media/App.scss": "/free-chat/static/media/AngelRhapsodyRegular-ZVGJz.d0379fbf.ttf",
+    "static/media/chat-logo.1371f267.png": "/free-chat/static/media/chat-logo.1371f267.png",
+    "static/media/closed-eye.938717ca.png": "/free-chat/static/media/closed-eye.938717ca.png",
+    "static/media/setting.d253e01d.png": "/free-chat/static/media/setting.d253e01d.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.710c26f5.js",
+    "static/js/2.84870de2.chunk.js",
+    "static/css/main.a60b3377.chunk.css",
+    "static/js/main.61f54820.chunk.js"
+  ]
+}
