@@ -41,6 +41,11 @@ console.log('publicPath:', publicPath);
 console.log('process.env.NODE_ENV:', process.env.NODE_ENV);
 app.use(express.static(path.resolve(__dirname, 'build')))
 // app.use(express.static(publicPath))
+// const corsOptions = {
+//     origin: '*',
+//     credentials: true
+// }
+// app.use(cors(corsOptions))
 console.log('__dirname:', __dirname);
 // } else {
 // const corsOptions = {
