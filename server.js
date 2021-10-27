@@ -62,7 +62,7 @@ app.use('/api/room', roomRoutes)
 // so when requesting http://localhost:3030/index.html/car/123 it will still respond with
 // our SPA (single page app) (the index.html file) and allow vue/react-router to take it from there
 app.get('/**', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'))
+    res.sendFile(path.join(__dirname, 'build', 'index.html'))
 })
 const { socketService } = require('./services/socket-service')
 socketService(server, session)
