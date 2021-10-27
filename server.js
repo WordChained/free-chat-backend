@@ -10,7 +10,7 @@ const session = expressSession({
     saveUninitialized: true,
     cookie: { secure: false }
 })
-
+const publicPath = path.join(__dirname, '.', 'build')
 const app = express()
 app.use(session)
 const server = http.createServer(app);
@@ -40,7 +40,7 @@ app.use((err, req, res, next) => {
 
 console.log('process.env.NODE_ENV:', process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.resolve(__dirname, 'build')))
+    app.use(express.static(publicPath))
     console.log(__dirname);
 } else {
     const corsOptions = {
@@ -59,12 +59,12 @@ app.use('/api/auth', authRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/room', roomRoutes)
 
-app.get('/*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'))
-})
 // Make every server-side-route to match the index.html
 // so when requesting http://localhost:3030/index.html/car/123 it will still respond with
 // our SPA (single page app) (the index.html file) and allow vue/react-router to take it from there
+app.get('/*', (req, res) => {
+    res.sendFile(path.join(publicPath, 'index.html'))
+})
 const { socketService } = require('./services/socket-service')
 socketService(server, session)
 // const io = socketIo(server);
