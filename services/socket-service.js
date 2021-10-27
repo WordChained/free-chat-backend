@@ -5,7 +5,7 @@ const logger = require('./logger-service')
 const socketService = (server, session) => {
     const io = socketIo(server, {
         cors: {
-            origin: ["http://localhost:3000", 'http://127.0.0.1:3000', 'https://wordchained.github.io/free-chat'],
+            origin: ["http://localhost:3000", 'http://127.0.0.1:3000', 'https://wordchained.github.io/free-chat', 'https://free-chat-1.herokuapp.com/'],
             methods: ["GET", "POST", "DELETE", "PUT"],
             credentials: true,
         }

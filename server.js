@@ -43,14 +43,14 @@ app.use(express.static(path.resolve(__dirname, 'build')))
 // app.use(express.static(publicPath))
 console.log('__dirname:', __dirname);
 // } else {
-//     const corsOptions = {
-//         origin: ['http://127.0.0.1:8080', 'http://localhost:8080', 'http://localhost:3000',
-//             'http://localhost:8081', 'http://127.0.0.1:3030', 'http://127.0.0.1:3000', 'http://localhost:3030',
-//             'http://192.168.1.17:8080/', 'http://192.168.1.22:8080',
-//         ],
-//         credentials: true
-//     }
-//     app.use(cors(corsOptions))
+// const corsOptions = {
+//     origin: ['http://127.0.0.1:8080', 'http://localhost:8080', 'http://localhost:3000',
+//         'http://localhost:8081', 'http://127.0.0.1:3030', 'http://127.0.0.1:3000', 'http://localhost:3030',
+//         'http://192.168.1.17:8080/', 'http://192.168.1.22:8080',
+//     ],
+//     credentials: true
+// }
+// app.use(cors(corsOptions))
 // }
 
 const authRoutes = require('./api/auth/auth-routes')
