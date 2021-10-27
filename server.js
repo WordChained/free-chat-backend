@@ -56,6 +56,7 @@ console.log('__dirname:', __dirname);
 //     credentials: true
 // }
 // app.use(cors(corsOptions))
+app.use(cors())
 // }
 
 const authRoutes = require('./api/auth/auth-routes')
