@@ -38,6 +38,9 @@ app.use((err, req, res, next) => {
     next();
 });
 
+app.get('/**', (req, res) => {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'))
+})
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.resolve(__dirname, 'build')))
     console.log(__dirname);
@@ -51,9 +54,6 @@ if (process.env.NODE_ENV === 'production') {
     }
     app.use(cors(corsOptions))
 }
-app.get('/**', (req, res) => {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'))
-})
 const authRoutes = require('./api/auth/auth-routes')
 const userRoutes = require('./api/user/user-routes')
 const roomRoutes = require('./api/room/room-routes')
