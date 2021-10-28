@@ -27,6 +27,7 @@ server.listen(port, () => {
 
 
 app.use(express.json())
+app.use(cors())
 
 // app.use((err, req, res, next) => {
 //     console.log(err);
@@ -49,14 +50,15 @@ app.use(express.static(path.resolve(__dirname, 'build')))
 console.log('__dirname:', __dirname);
 // } else {
 // const corsOptions = {
+//     // originWhitelist: [],
 //     origin: ['http://127.0.0.1:8080', 'http://localhost:8080', 'http://localhost:3000',
 //         'http://localhost:8081', 'http://127.0.0.1:3030', 'http://127.0.0.1:3000', 'http://localhost:3030',
-//         'http://192.168.1.17:8080/', 'http://192.168.1.22:8080',
+//         'http://192.168.1.17:8080/', 'http://192.168.1.22:8080', 'https://free-chat-1.herokuapp.com/'
 //     ],
 //     credentials: true
 // }
 // app.use(cors(corsOptions))
-app.use(cors())
+// app.use(cors())
 // }
 
 const authRoutes = require('./api/auth/auth-routes')
