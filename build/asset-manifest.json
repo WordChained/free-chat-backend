@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/static/css/main.852195eb.chunk.css",
-    "main.js": "/static/js/main.65e75e38.chunk.js",
-    "main.js.map": "/static/js/main.65e75e38.chunk.js.map",
+    "main.css": "/static/css/main.5cfab888.chunk.css",
+    "main.js": "/static/js/main.ee80952e.chunk.js",
+    "main.js.map": "/static/js/main.ee80952e.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.239896b2.js",
     "runtime-main.js.map": "/static/js/runtime-main.239896b2.js.map",
-    "static/js/2.2951f438.chunk.js": "/static/js/2.2951f438.chunk.js",
-    "static/js/2.2951f438.chunk.js.map": "/static/js/2.2951f438.chunk.js.map",
+    "static/js/2.6bf49c46.chunk.js": "/static/js/2.6bf49c46.chunk.js",
+    "static/js/2.6bf49c46.chunk.js.map": "/static/js/2.6bf49c46.chunk.js.map",
     "static/js/3.4d07e792.chunk.js": "/static/js/3.4d07e792.chunk.js",
     "static/js/3.4d07e792.chunk.js.map": "/static/js/3.4d07e792.chunk.js.map",
     "index.html": "/index.html",
-    "static/css/main.852195eb.chunk.css.map": "/static/css/main.852195eb.chunk.css.map",
-    "static/js/2.2951f438.chunk.js.LICENSE.txt": "/static/js/2.2951f438.chunk.js.LICENSE.txt",
+    "static/css/main.5cfab888.chunk.css.map": "/static/css/main.5cfab888.chunk.css.map",
+    "static/js/2.6bf49c46.chunk.js.LICENSE.txt": "/static/js/2.6bf49c46.chunk.js.LICENSE.txt",
     "static/media/App.scss": "/static/media/AngelRhapsodyRegular-ZVGJz.d0379fbf.ttf",
     "static/media/chat-logo.1371f267.png": "/static/media/chat-logo.1371f267.png",
     "static/media/closed-eye.938717ca.png": "/static/media/closed-eye.938717ca.png",
@@ -19,8 +19,8 @@
   },
   "entrypoints": [
     "static/js/runtime-main.239896b2.js",
-    "static/js/2.2951f438.chunk.js",
-    "static/css/main.852195eb.chunk.css",
-    "static/js/main.65e75e38.chunk.js"
+    "static/js/2.6bf49c46.chunk.js",
+    "static/css/main.5cfab888.chunk.css",
+    "static/js/main.ee80952e.chunk.js"
   ]
 }
