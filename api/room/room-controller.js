@@ -42,7 +42,7 @@ const deleteRoom = async (req, res) => {
 const addRoom = async (req, res) => {
     try {
         const room = req.body
-        savedRoom = await roomService.add(room)
+        const savedRoom = await roomService.add(room)
         // socketService.broadcast({ type: 'room-added', data: savedRoom })
         res.send(savedRoom)
 

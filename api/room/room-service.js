@@ -61,7 +61,8 @@ const add = async (room) => {
             tags: room.tags || [],
             likedByUsers: room.likedByUsers,
             restrictions: room.restrictions,
-            limit: room.limit
+            limit: room.limit,
+            msgs: room.msgs,
         }
         const collection = await dbService.getCollection('room')
         await collection.insertOne(roomToAdd)

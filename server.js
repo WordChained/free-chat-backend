@@ -25,7 +25,7 @@ app.use(express.json())
 app.use(session)
 // app.use(express.static('build'))
 
-console.log('publicPath:', publicPath);
+// console.log('publicPath:', publicPath);
 if (process.env.NODE_ENV === 'production') {
     console.log('process.env.NODE_ENV:', process.env.NODE_ENV);
     // app.use(express.static(path.resolve(__dirname, 'build')))
