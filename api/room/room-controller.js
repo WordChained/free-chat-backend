@@ -60,7 +60,6 @@ const updateRoom = async (req, res) => {
     try {
         const room = req.body
         const savedRoom = await roomService.update(room)
-        // socketService.emitTo({ type: 'room updated1', data: savedRoom, label: room._id });
         res.send(savedRoom)
     } catch (err) {
         logger.error('Failed to update room', err)
