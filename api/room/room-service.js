@@ -93,7 +93,7 @@ const update = async (room) => {
 
         }
         const collection = await dbService.getCollection('room')
-        await collection.updateOne({ '_id': roomToSave._id }, { $addToSet: roomToSave })
+        await collection.updateOne({ '_id': roomToSave._id }, { $set: roomToSave })
         return roomToSave;
     } catch (err) {
         // logger.error(`cannot update room ${room._id}`, err)

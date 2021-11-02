@@ -7,8 +7,8 @@ const router = express.Router()
 // router.use(requireAuth)
 
 router.get('/', getUsers)
-router.get('/:id', requireAuth, getUser)
-router.put('/:id', requireAuth, updateUser)
+router.get('/:id', getUser)
+router.put('/:id', updateUser)
 // router.put('/room/:userId', requireAuth, likedRoom)
 
 // router.put('/:id',  requireAuth, updateUser)
