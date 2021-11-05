@@ -45,7 +45,6 @@ if (process.env.NODE_ENV === 'production') {
     // app.use(cors(corsOptions))
 } else {
     const corsOptions = {
-        // originWhitelist: [],
         origin: ['http://127.0.0.1:8080', 'http://localhost:8080', 'http://localhost:3000',
             'http://localhost:8081', 'http://127.0.0.1:3030', 'http://127.0.0.1:3000', 'http://localhost:3030',
             'http://192.168.1.17:8080/', 'http://192.168.1.22:8080',
