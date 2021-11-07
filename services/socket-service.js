@@ -29,7 +29,7 @@ const socketService = (server, session) => {
             socket.leave(topic)
             if (numOfUsers[topic]) {
                 numOfUsers[topic] = numOfUsers[topic].filter(id => {
-                    console.log(id !== uid);
+                    // console.log(id !== uid);
                     return id !== uid
                 })
                 // console.log('users-in-room(leave):', numOfUsers[topic].length);
@@ -50,9 +50,11 @@ const socketService = (server, session) => {
             if (socket.myTopic === topic) return;
             if (socket.myTopic) {
                 socket.leave(topic)
-                if (numOfUsers[topic]) numOfUsers[topic] = numOfUsers[topic].filter(id => id !== uid)
-                io.to(topic).emit('users-in-room', numOfUsers[topic].length)
-                console.log('left in add');
+                if (numOfUsers[topic]) {
+                    numOfUsers[topic] = numOfUsers[topic].filter(id => id !== uid)
+                    io.to(topic).emit('users-in-room', numOfUsers[topic].length)
+                    console.log('left in add');
+                }
             }
             socket.join(topic)
             socket.myTopic = topic
@@ -66,7 +68,7 @@ const socketService = (server, session) => {
             io.to(topic).emit('users-in-room', numOfUsers[topic].length)
         })
         socket.on('check-num-of-users', (topic) => {
-            if (!numOfUsers[topic]) return
+            if (!numOfUsers[topic] || !numOfUsers[topic].length) return
             // console.log('req sent to know num of users', numOfUsers[topic].length);
             io.to(topic).emit('users-in-room', numOfUsers[topic].length)
         })
