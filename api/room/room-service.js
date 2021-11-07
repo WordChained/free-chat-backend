@@ -140,7 +140,9 @@ async function addMsg(roomId, msg) {
         console.log('Error on room service =>', err)
     }
 }
-async function deleteMsg(roomId, msgId) {
+async function deleteMsg(msgId, roomId) {
+    console.log('msgId:', msgId);
+    console.log('roomId:', roomId);
     try {
         const collection = await dbService.getCollection('room')
         await collection.updateOne(
@@ -148,7 +150,7 @@ async function deleteMsg(roomId, msgId) {
             {
                 $pull: {
                     'msgs': {
-                        'msgs.$[t].id': ObjectId(msgId)
+                        'id': ObjectId(msgId)
                     }
                 }
             })

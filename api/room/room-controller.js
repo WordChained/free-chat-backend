@@ -146,7 +146,7 @@ const unLikeMsg = async (req, res) => {
 const deleteMsg = async (req, res) => {
     const { msgId, roomId } = req.body
     try {
-        const savedRoom = await roomService.deleteMsg(roomId, msgId)
+        const savedRoom = await roomService.deleteMsg(msgId, roomId)
         res.send(savedRoom)
     } catch (err) {
         logger.error('Failed to remove msg with the id', msgId + '.', err)
