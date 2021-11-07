@@ -40,11 +40,13 @@ const socketService = (server, session) => {
         socket.on('room topic refresh', ({ topic, uid }) => {
             socket.join(topic)
             socket.myTopic = topic
-            if (numOfUsers[topic] && numOfUsers[topic].includes(uid)) {
-                // console.log('no need to add again');
+            if (numOfUsers[topic]) {
+                if (numOfUsers[topic].includes(uid)) {
+                    // console.log('no need to add again');
+                }
+                else numOfUsers[topic] = [...numOfUsers[topic], uid]
+                io.to(topic).emit('users-in-room', numOfUsers[topic].length)
             }
-            else numOfUsers[topic] = [...numOfUsers[topic], uid]
-            io.to(topic).emit('users-in-room', numOfUsers[topic].length)
         })
         socket.on('room topic', ({ topic, uid }) => {
             if (socket.myTopic === topic) return;

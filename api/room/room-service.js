@@ -74,6 +74,7 @@ const add = async (room) => {
     }
 }
 
+
 const update = async (room) => {
     try {
         // peek only updatable fields!
@@ -139,6 +140,24 @@ async function addMsg(roomId, msg) {
         console.log('Error on room service =>', err)
     }
 }
+async function deleteMsg(roomId, msgId) {
+    try {
+        const collection = await dbService.getCollection('room')
+        await collection.updateOne(
+            { '_id': ObjectId(roomId) },
+            {
+                $pull: {
+                    'msgs': {
+                        'msgs.$[t].id': ObjectId(msgId)
+                    }
+                }
+            })
+        return await collection.findOne(ObjectId(roomId));
+    } catch (err) {
+        // logger.error(`cannot add message ${song.id}`, err)
+        console.log('Error on room service =>', err)
+    }
+}
 async function starMsg(roomId, uid, msgId) {
     try {
         const collection = await dbService.getCollection('room')
@@ -147,7 +166,7 @@ async function starMsg(roomId, uid, msgId) {
             {
                 //adds to array only if it doesnt hold the value
                 $addToSet: {
-                    //t is just a name for the nameless array
+                    //'t' is known to be a name of a nameless object!
                     'msgs.$[t].star': uid
                 }
             },
@@ -260,6 +279,7 @@ module.exports = {
     update,
     getMsgs,
     addMsg,
+    deleteMsg,
     starMsg,
     unStarMsg,
     likeMsg,

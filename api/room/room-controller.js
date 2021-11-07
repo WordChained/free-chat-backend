@@ -94,9 +94,8 @@ const addMsg = async (req, res) => {
     }
 }
 const starMsg = async (req, res) => {
+    const { uid, msgId } = req.body;
     try {
-        console.log('req.body:', req.body);
-        const { uid, msgId } = req.body;
         const savedRoom = await roomService.starMsg(req.params.id, uid, msgId);
         res.send(savedRoom);
 
@@ -107,9 +106,8 @@ const starMsg = async (req, res) => {
     }
 }
 const unStarMsg = async (req, res) => {
+    const { uid, msgId } = req.body;
     try {
-        console.log('req.body:', req.body);
-        const { uid, msgId } = req.body;
         const savedRoom = await roomService.unStarMsg(req.params.id, uid, msgId);
         res.send(savedRoom);
 
@@ -120,8 +118,8 @@ const unStarMsg = async (req, res) => {
     }
 }
 const likeMsg = async (req, res) => {
+    const { uid, msgId } = req.body;
     try {
-        const { uid, msgId } = req.body;
         const savedRoom = await roomService.likeMsg(req.params.id, uid, msgId);
         res.send(savedRoom);
 
@@ -133,8 +131,8 @@ const likeMsg = async (req, res) => {
 }
 
 const unLikeMsg = async (req, res) => {
+    const { uid, msgId } = req.body;
     try {
-        const { uid, msgId } = req.body;
         const savedRoom = await roomService.unLikeMsg(req.params.id, uid, msgId);
         res.send(savedRoom);
 
@@ -142,6 +140,18 @@ const unLikeMsg = async (req, res) => {
         logger.error('Failed to unlike a the msg with the id', msgId + '.', err)
         console.log('Error on room controller =>', err)
         res.status(500).send({ err: `Failed to unlike a the msg with the id ${msgId}` })
+    }
+}
+
+const deleteMsg = async (req, res) => {
+    const { msgId, roomId } = req.body
+    try {
+        const savedRoom = await roomService.deleteMsg(roomId, msgId)
+        res.send(savedRoom)
+    } catch (err) {
+        logger.error('Failed to remove msg with the id', msgId + '.', err)
+        console.log('Error on room controller =>', err)
+        res.status(500).send({ err: `Failed to remove msg with the id ${msgId}` })
     }
 }
 
@@ -156,5 +166,6 @@ module.exports = {
     starMsg,
     unStarMsg,
     likeMsg,
-    unLikeMsg
+    unLikeMsg,
+    deleteMsg
 }
