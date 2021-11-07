@@ -12,8 +12,8 @@ const socketService = (server, session) => {
             credentials: true,
         }
     });
-    io.use((socket,next)=>{
-        session(socket.request,{},next)
+    io.use((socket, next) => {
+        session(socket.request, {}, next)
     })
     io.on('connect', (socket) => {
         console.log('New socket connected', socket.id);
@@ -23,47 +23,56 @@ const socketService = (server, session) => {
         socket.on('disconnect', () => {
             console.log('socket disconnected');
         })
-        socket.on('leave room', topic => {
-            if (numOfUsers[topic] < 0) numOfUsers[topic] = 0
+        socket.on('leave room', ({ topic, uid }) => {
+            // if (numOfUsers[topic].length < 0) numOfUsers[topic] = 0
             console.log('leave room:', topic);
             socket.leave(topic)
             if (numOfUsers[topic]) {
-                numOfUsers[topic]--
-                console.log('users-in-room(leave):', numOfUsers[topic]);
-                io.to(topic).emit('users-in-room', numOfUsers[topic])
+                numOfUsers[topic] = numOfUsers[topic].filter(id => {
+                    console.log(id !== uid);
+                    return id !== uid
+                })
+                // console.log('users-in-room(leave):', numOfUsers[topic].length);
+                // console.log('leave uid list:', numOfUsers[topic]);
+                io.to(topic).emit('users-in-room', numOfUsers[topic].length)
             }
         })
-        socket.on('room topic refresh',topic=>{
+        socket.on('room topic refresh', ({ topic, uid }) => {
             socket.join(topic)
             socket.myTopic = topic
-            io.to(topic).emit('users-in-room', numOfUsers[topic])
+            if (numOfUsers[topic] && numOfUsers[topic].includes(uid)) {
+                // console.log('no need to add again');
+            }
+            else numOfUsers[topic] = [...numOfUsers[topic], uid]
+            io.to(topic).emit('users-in-room', numOfUsers[topic].length)
         })
-        socket.on('room topic', topic => {
+        socket.on('room topic', ({ topic, uid }) => {
             if (socket.myTopic === topic) return;
             if (socket.myTopic) {
                 socket.leave(topic)
-                numOfUsers[topic]--
-                io.to(topic).emit('users-in-room', numOfUsers[topic])
+                if (numOfUsers[topic]) numOfUsers[topic] = numOfUsers[topic].filter(id => id !== uid)
+                io.to(topic).emit('users-in-room', numOfUsers[topic].length)
                 console.log('left in add');
             }
             socket.join(topic)
             socket.myTopic = topic
             // console.log(socket.request.res);
             if (!numOfUsers[topic]) {
-                numOfUsers[topic] = 1
-            } else {
-                numOfUsers[topic]++
+                numOfUsers[topic] = [uid]
+            } else if (!numOfUsers[topic].includes(uid)) {
+                numOfUsers[topic] = [...numOfUsers[topic], uid]
             }
-            console.log('users-in-room(add):', numOfUsers[topic]);
-            io.to(topic).emit('users-in-room', numOfUsers[topic])
+            // console.log('users-in-room(add):', numOfUsers[topic].length);
+            io.to(topic).emit('users-in-room', numOfUsers[topic].length)
         })
         socket.on('check-num-of-users', (topic) => {
-            console.log('req sent to know num of users', numOfUsers[topic]);
-            io.to(topic).emit('users-in-room', numOfUsers[topic])
+            if (!numOfUsers[topic]) return
+            // console.log('req sent to know num of users', numOfUsers[topic].length);
+            io.to(topic).emit('users-in-room', numOfUsers[topic].length)
         })
         socket.on('room newMsg', msg => {
             logger.debug('topic:', socket.myTopic, 'msg:', msg)
-            console.log(socket.rooms);
+            // console.log(socket.rooms);
             io.to(socket.myTopic).emit('room addMsg', msg)
         })
     })
