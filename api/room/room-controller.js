@@ -80,11 +80,34 @@ const getMsgs = async (req, res) => {
         res.status(500).send({ err: 'Failed to get messages' })
     }
 }
+const getPrivateMsgs = async (req, res) => {
+    try {
+        const unfilteredMsgs = await roomService.getPrivateMsgs(req.params.id);
+        const msgs = [...new Set(unfilteredMsgs)]
+        res.send(msgs)
+    } catch (err) {
+        logger.error('Cannot get messages', err)
+        console.log('Error on room controller =>', err)
+        res.status(500).send({ err: 'Failed to get messages' })
+    }
+}
 
 const addMsg = async (req, res) => {
     try {
         const newMsg = req.body;
         const savedRoom = await roomService.addMsg(req.params.id, newMsg);
+        res.send(savedRoom);
+
+    } catch (err) {
+        logger.error('Failed to add a message to this room', err)
+        console.log('Error on room controller =>', err)
+        res.status(500).send({ err: 'Failed to add a message to this room' })
+    }
+}
+const addPrivateMsg = async (req, res) => {
+    try {
+        const newMsg = req.body;
+        const savedRoom = await roomService.addPrivateMsg(req.params.id, newMsg);
         res.send(savedRoom);
 
     } catch (err) {
@@ -155,6 +178,16 @@ const deleteMsg = async (req, res) => {
     }
 }
 
+const deletePrivateChat = async (req, res) => {
+    const { chatId } = req.body
+    try {
+        await roomService.deletePrivateChat(chatId)
+    } catch (err) {
+        console.log('Error on room controller =>', err)
+        res.status(500).send({ err: `Failed to remove chat with the id ${chatId}` })
+    }
+}
+
 module.exports = {
     getRooms,
     getRoom,
@@ -167,5 +200,8 @@ module.exports = {
     unStarMsg,
     likeMsg,
     unLikeMsg,
-    deleteMsg
+    deleteMsg,
+    addPrivateMsg,
+    getPrivateMsgs,
+    deletePrivateChat
 }

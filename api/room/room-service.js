@@ -117,6 +117,16 @@ async function getMsgs(roomId) {
         console.log('Cant get messages', err);
     }
 }
+async function getPrivateMsgs(chatId) {
+    if (!chatId) return []
+    try {
+        const collection = await dbService.getCollection('private-chat')
+        const chat = await collection.findOne({ '_id': ObjectId(chatId) })
+        return chat.msgs
+    } catch (err) {
+        console.log('Cant get messages', err);
+    }
+}
 
 async function addMsg(roomId, msg) {
     try {
@@ -126,7 +136,8 @@ async function addMsg(roomId, msg) {
             {
                 $push: {
                     'msgs': {
-                        'text': msg.msg, id: ObjectId(),
+                        'text': msg.msg,
+                        id: ObjectId(),
                         'sentAt': Date.now(),
                         uid: msg.uid,
                         name: msg.name,
@@ -142,6 +153,67 @@ async function addMsg(roomId, msg) {
         console.log('Error on room service =>', err)
     }
 }
+async function addPrivateMsg(chatId, msg) {
+    try {
+        const collection = await dbService.getCollection('private-chat')
+        const isExists = collection.find({ '_id': ObjectId(chatId) }).limit(1).size()
+        if (!isExists) {
+            await _addPrivateChat(chatId)
+            await collection.updateOne(
+                { '_id': chatId },
+                {
+                    $push: {
+                        'msgs': {
+                            'text': msg.msg,
+                            // id: ObjectId(),
+                            'sentAt': Date.now(),
+                            uid: msg.uid,
+                            name: msg.name,
+                        }
+                    }
+                })
+            return await collection.findOne(ObjectId(roomId));
+        } else {
+            await collection.updateOne(
+                { '_id': chatId },
+                {
+                    $push: {
+                        'msgs': {
+                            'text': msg.msg,
+                            // id: ObjectId(),
+                            'sentAt': Date.now(),
+                            uid: msg.uid,
+                            name: msg.name,
+                        }
+                    }
+                })
+            return await collection.findOne(chatId);
+        }
+    } catch (err) {
+        // logger.error(`cannot add message ${song.id}`, err)
+        console.log('Error on room service =>', err)
+    }
+}
+async function deletePrivateChat(chatId) {
+    try {
+        const collection = await dbService.getCollection('private-chat')
+        await collection.deleteOne({ '_id': chatId })
+    } catch (err) {
+        console.log(`couldnt delete chat ${chatId}.`, err);
+    }
+}
+const _addPrivateChat = async (chatId) => {
+    const chatToAdd = {
+        _id: chatId,
+        type: 'private',
+        createdAt: Date.now(),
+        msgs: room.msgs,
+        wallPaper: ''
+    }
+    await collection.insertOne(chatToAdd)
+    return chatToAdd
+}
+
 async function deleteMsg(msgId, roomId) {
     console.log('msgId:', msgId);
     console.log('roomId:', roomId);
@@ -287,5 +359,8 @@ module.exports = {
     starMsg,
     unStarMsg,
     likeMsg,
-    unLikeMsg
+    unLikeMsg,
+    addPrivateMsg,
+    getPrivateMsgs,
+    deletePrivateChat
 }
