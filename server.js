@@ -5,6 +5,7 @@ const cors = require('cors')
 // const path = require('path')
 // const publicPath = path.join(__dirname, 'build')
 const expressSession = require('express-session')
+// const timeout = require('connect-timeout')
 
 const app = express()
 app.get('/api/test', (req, res) => {
@@ -23,6 +24,9 @@ const session = expressSession({
 
 app.use(express.json())
 app.use(session)
+
+
+
 // app.use(express.static('build'))
 
 // console.log('publicPath:', publicPath);
@@ -55,6 +59,12 @@ if (process.env.NODE_ENV === 'production') {
     // app.use(cors())
 }
 
+// app.use(timeout(360000))
+// function haltOnTimedout(req, res, next) {
+//     console.log('timeout handled');
+//     if (!req.timedout) next();
+// }
+// app.use(haltOnTimedout);
 const authRoutes = require('./api/auth/auth-routes')
 const userRoutes = require('./api/user/user-routes')
 const roomRoutes = require('./api/room/room-routes')

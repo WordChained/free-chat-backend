@@ -106,7 +106,6 @@ const update = async (room) => {
 
 }
 
-
 async function getMsgs(roomId) {
     if (!roomId) return []
     try {
@@ -120,9 +119,9 @@ async function getMsgs(roomId) {
 async function getPrivateMsgs(chatId) {
     if (!chatId) return []
     try {
-        const collection = await dbService.getCollection('private-chat')
-        const chat = await collection.findOne({ '_id': ObjectId(chatId) })
-        return chat.msgs
+        const collection = await dbService.getCollection('private_chat')
+        const chat = await collection.findOne({ '_id': chatId })
+        return chat ? chat.msgs : []
     } catch (err) {
         console.log('Cant get messages', err);
     }
@@ -155,63 +154,56 @@ async function addMsg(roomId, msg) {
 }
 async function addPrivateMsg(chatId, msg) {
     try {
-        const collection = await dbService.getCollection('private-chat')
-        const isExists = collection.find({ '_id': ObjectId(chatId) }).limit(1).size()
-        if (!isExists) {
-            await _addPrivateChat(chatId)
-            await collection.updateOne(
-                { '_id': chatId },
-                {
-                    $push: {
-                        'msgs': {
-                            'text': msg.msg,
-                            // id: ObjectId(),
-                            'sentAt': Date.now(),
-                            uid: msg.uid,
-                            name: msg.name,
-                        }
+        const collection = await dbService.getCollection('private_chat')
+        await collection.updateOne(
+            { '_id': chatId },
+            {
+                $push: {
+                    'msgs': {
+                        'text': msg.msg,
+                        id: ObjectId(),
+                        'sentAt': Date.now(),
+                        uid: msg.uid,
+                        name: msg.name,
                     }
-                })
-            return await collection.findOne(ObjectId(roomId));
-        } else {
-            await collection.updateOne(
-                { '_id': chatId },
-                {
-                    $push: {
-                        'msgs': {
-                            'text': msg.msg,
-                            // id: ObjectId(),
-                            'sentAt': Date.now(),
-                            uid: msg.uid,
-                            name: msg.name,
-                        }
-                    }
-                })
-            return await collection.findOne(chatId);
-        }
+                }
+            },
+        )
+        return await collection.findOne({ '_id': chatId });
     } catch (err) {
         // logger.error(`cannot add message ${song.id}`, err)
-        console.log('Error on room service =>', err)
+        console.log('Error on room service (addPrivateMsg) =>', err)
     }
 }
 async function deletePrivateChat(chatId) {
     try {
-        const collection = await dbService.getCollection('private-chat')
+        const collection = await dbService.getCollection('private_chat')
         await collection.deleteOne({ '_id': chatId })
     } catch (err) {
         console.log(`couldnt delete chat ${chatId}.`, err);
     }
 }
-const _addPrivateChat = async (chatId) => {
-    const chatToAdd = {
-        _id: chatId,
-        type: 'private',
-        createdAt: Date.now(),
-        msgs: room.msgs,
-        wallPaper: ''
+async function addPrivateChat(chatId) {
+    try {
+        const collection = await dbService.getCollection('private_chat')
+        await collection.updateOne(
+            { '_id': chatId },
+            {
+                $set: {
+
+                    _id: chatId,
+                    type: 'private',
+                    createdAt: Date.now(),
+                    msgs: [],
+                    wallPaper: ''
+                }
+            },
+            { upsert: true }
+        )
+        return await collection.findOne({ '_id': chatId })
+    } catch (err) {
+        console.log('couldnt add private chat.', err);
     }
-    await collection.insertOne(chatToAdd)
-    return chatToAdd
 }
 
 async function deleteMsg(msgId, roomId) {
@@ -362,5 +354,6 @@ module.exports = {
     unLikeMsg,
     addPrivateMsg,
     getPrivateMsgs,
-    deletePrivateChat
+    deletePrivateChat,
+    addPrivateChat
 }

@@ -32,6 +32,8 @@ const socketService = (server, session) => {
         })
         socket.on('disconnect', () => {
             console.log('socket disconnected');
+            //emit delete privateChat to the front and dispatch it?
+            //if socket.inRoom ...
         })
         socket.on('leave room', ({ topic, uid }) => {
             // if (numOfUsers[topic].length < 0) numOfUsers[topic] = 0
@@ -87,10 +89,14 @@ const socketService = (server, session) => {
         socket.on('join-private-room', ({ uid, topics }) => {
             if (socket.inRoom) return
             console.log('joining room...')
-            if (users.length <= 1) {
+            if (users.length < 1) {
                 if (!users.find(user => user.uid === uid)) {
                     users.push({ uid, topics })
                     socket.join(uid)
+                    socket.inRoom = uid
+                    setTimeout(() => {
+                        io.to(uid).emit('create-private-chat', uid)
+                    }, 2000)
                 }
                 console.log('no other users right now');
                 setTimeout(() => {
@@ -110,6 +116,7 @@ const socketService = (server, session) => {
                     socket.join(uid)
                     socket.inRoom = uid
                     setTimeout(() => {
+                        io.to(uid).emit('create-private-chat', uid)
                         return io.to(uid).emit('private-room-enter-msg', 'You are connected, waiting for another user...')
                     }, 2000)
                 } else {//joining a room
@@ -120,6 +127,7 @@ const socketService = (server, session) => {
                     socket.join(randUser.uid)//join the ready room
                     socket.inRoom = randUser.uid
                     setTimeout(() => {
+                        io.to(randUser.uid).emit('create-private-chat', randUser.uid)
                         return io.to(socket.inRoom).emit('private-room-enter-msg', 'You are connected, say hello!')
                     }, 2000)
                 }
@@ -131,6 +139,7 @@ const socketService = (server, session) => {
             users.push({ uid, topics })//adding to 'lobby'
             socket.leave(socket.inRoom)
             io.to(socket.inRoom).emit('private-room-enter-msg', uid === socket.inRoom ? 'You left the room.' : 'other user disconnected.')
+            socket.inRoom = null
         })
         //later i can find users by their uid and choose who i speak to!
         // io.on("connection", socket => {
@@ -145,8 +154,8 @@ const socketService = (server, session) => {
         })
         socket.on('private-room-msg', msg => {
             // logger.debug('topic:', socket.myTopic, 'msg:', msg)
-            // console.log(socket.rooms);
-            io.to(socket.inRoom).emit('private-room-add-msg', msg)
+            console.log('private-room-add-msg', msg, 'socket.inRoom:', socket.inRoom);
+            io.to(socket.inRoom).emit('private-room-add-msg', { msg, chatId: socket.inRoom })
         })
     })
 }

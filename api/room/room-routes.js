@@ -1,7 +1,7 @@
 const express = require('express')
 // const { requireAuth, requireAdmin } = require('../../middlewares/requireAuth.middleware')
 const { log } = require('../../middlewares/logger.middleware')
-const { addRoom, updateRoom, getRooms, getRoom, deleteRoom, deleteMsg, getMsgs, addMsg, starMsg, unStarMsg, likeMsg, unLikeMsg, getPrivateMsgs, addPrivateMsg, deletePrivateChat } = require('./room-controller')
+const { addRoom, updateRoom, getRooms, getRoom, deleteRoom, deleteMsg, getMsgs, addMsg, starMsg, unStarMsg, likeMsg, unLikeMsg, getPrivateMsgs, addPrivateMsg, deletePrivateChat, addPrivateChat } = require('./room-controller')
 const router = express.Router()
 
 // middleware that is specific to this router
@@ -22,7 +22,8 @@ router.delete('/chat/:id/star/:uid', unStarMsg)
 router.delete('/chat/:id/likes/:uid', unLikeMsg)
 
 router.get('/private-chat/:id', getPrivateMsgs)
-router.post('/private-chat/:id', addPrivateMsg)
+router.post('/private-chat/:id', addPrivateChat)
+router.post('/private-chat/:id/msg', addPrivateMsg)
 router.delete('/private-chat/:id', deletePrivateChat)
 
 module.exports = router
