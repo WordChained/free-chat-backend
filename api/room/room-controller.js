@@ -86,7 +86,6 @@ const getPrivateMsgs = async (req, res) => {
     try {
         const unfilteredMsgs = await roomService.getPrivateMsgs(req.params.id);
         const msgs = [...new Set(unfilteredMsgs)]//not sure i need this now
-        console.log('msgs:', msgs);
         res.send(msgs)
     } catch (err) {
         logger.error('Cannot get messages', err)
