@@ -27,9 +27,7 @@ const socketService = (server, session) => {
     })
     io.on('connect', (socket) => {
         console.log('New socket connected', socket.id);
-        socket.emit('online-users', () => {
-            return socket.adapter.sids.size
-        })
+
         socket.on('disconnect', () => {
             console.log('socket disconnected');
             //emit delete privateChat to the front and dispatch it?
@@ -87,21 +85,21 @@ const socketService = (server, session) => {
             io.to(topic).emit('users-in-room', numOfUsers[topic].length)
         })
         socket.on('join-private-room', ({ uid, topics }) => {
-            if (socket.inRoom) return
-            console.log('joining room...')
+            console.log('socket.inRoom first check:', socket.inRoom);
+            if (socket.inRoom || users.find(u => u.uid === uid)) return
+            console.log('joining room... users:', users)
             if (users.length < 1) {
                 if (!users.find(user => user.uid === uid)) {
                     users.push({ uid, topics })
                     socket.join(uid)
                     socket.inRoom = uid
+                    socket.uid = uid
                     setTimeout(() => {
                         io.to(uid).emit('create-private-chat', uid)
+                        io.to(uid).emit('private-room-enter-msg', ('waiting for someone else to join! room' + socket.inRoom))
                     }, 2000)
                 }
-                console.log('no other users right now');
-                setTimeout(() => {
-                    return io.to(uid).emit('private-room-enter-msg', 'waiting for somone else to join!')
-                }, 2000)
+                console.log('no other users right now', users);
             } else {//if there are 2 or more people in the lobby
                 const potentialMatches = users.filter(user => {
                     if (user.uid === uid) return false
@@ -110,35 +108,43 @@ const socketService = (server, session) => {
                         return topics.includes(userTopic)
                     })
                 })
-                console.log('potentialMatches:', potentialMatches);
+                console.log('potentialMatches:', potentialMatches, 'total users:', users);
                 if (!potentialMatches.length) {//creating a room
-                    if (!users.find(user => user.uid === uid)) users.push({ uid, topics })//adding to 'lobby'
+                    console.log('in users?(-1 = no):', users.find(user => user.uid === uid));
+                    if (users.find(user => user.uid === uid) === -1) {
+                        console.log('the user is not in users(lobby), so i\'ll add him!');
+                        users.push({ uid, topics })
+                    }//adding to 'lobby'
                     socket.join(uid)
                     socket.inRoom = uid
+                    socket.uid = uid
                     setTimeout(() => {
                         io.to(uid).emit('create-private-chat', uid)
-                        return io.to(uid).emit('private-room-enter-msg', 'You are connected, waiting for another user...')
+                        io.to(uid).emit('private-room-enter-msg', ('You are connected, waiting for another user. room' + socket.inRoom))
                     }, 2000)
                 } else {//joining a room
                     const randNum = getRandomIntInclusive(0, potentialMatches.length - 1)
                     const randUser = potentialMatches[randNum]//one user from the potential list
+                    console.log('potentialMatches[randNum]', potentialMatches[randNum]);
                     const idx = users.findIndex(user => user.uid === randUser.uid)//his index
                     users.splice(idx, 1)//remove him from the array so no other users can join!
-                    socket.join(randUser.uid)//join the ready room
                     socket.inRoom = randUser.uid
+                    socket.join(socket.inRoom)//join the ready room
+                    console.log('socket.inRoom', socket.inRoom);
+                    socket.uid = uid
                     setTimeout(() => {
-                        io.to(randUser.uid).emit('create-private-chat', randUser.uid)
-                        return io.to(socket.inRoom).emit('private-room-enter-msg', 'You are connected, say hello!')
+                        io.to(socket.inRoom).emit('create-private-chat', socket.inRoom)
+                        io.to(socket.inRoom).emit('private-room-enter-msg', ('You are connected, say hello! room' + socket.inRoom))
                     }, 2000)
                 }
             }
         })
         socket.on('leave-private-room', ({ uid, topics }) => {
-            if (!socket.inRoom || users.includes(uid)) return
-            console.log('leaving room...');
-            users.push({ uid, topics })//adding to 'lobby'
+            if (!socket.inRoom || users.find(u => u.uid === uid)) return// no need to leave room if youre in the lobby. that means youre not in a room already!
+            console.log('leaving room...', socket.inRoom);
+
             socket.leave(socket.inRoom)
-            io.to(socket.inRoom).emit('private-room-enter-msg', uid === socket.inRoom ? 'You left the room.' : 'other user disconnected.')
+            // if (uid === socket.uid) io.to(socket.inRoom).emit('private-room-enter-msg', 'you left the room')
             socket.inRoom = null
         })
         //later i can find users by their uid and choose who i speak to!
@@ -154,7 +160,8 @@ const socketService = (server, session) => {
         })
         socket.on('private-room-msg', msg => {
             // logger.debug('topic:', socket.myTopic, 'msg:', msg)
-            console.log('private-room-add-msg', msg, 'socket.inRoom:', socket.inRoom);
+            //this emit is sent multiple times for some reason. theres probably a timeout
+            //not just this emit. any emit is sent the same amount of times when there's this unknown bug
             io.to(socket.inRoom).emit('private-room-add-msg', { msg, chatId: socket.inRoom })
         })
     })

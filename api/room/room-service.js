@@ -153,12 +153,13 @@ async function addMsg(roomId, msg) {
     }
 }
 async function addPrivateMsg(chatId, msg) {
+    console.log('does this happen?!?!?!?!?!?!?!?');
     try {
         const collection = await dbService.getCollection('private_chat')
         await collection.updateOne(
             { '_id': chatId },
             {
-                $push: {
+                $addToSet: {
                     'msgs': {
                         'text': msg.msg,
                         id: ObjectId(),
@@ -168,6 +169,7 @@ async function addPrivateMsg(chatId, msg) {
                     }
                 }
             },
+            { upsert: true }
         )
         return await collection.findOne({ '_id': chatId });
     } catch (err) {

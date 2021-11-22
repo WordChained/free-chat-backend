@@ -23,7 +23,7 @@ router.delete('/chat/:id/likes/:uid', unLikeMsg)
 
 router.get('/private-chat/:id', getPrivateMsgs)
 router.post('/private-chat/:id', addPrivateChat)
-router.post('/private-chat/:id/msg', addPrivateMsg)
+router.post('/private-chat/msg/:id', addPrivateMsg)
 router.delete('/private-chat/:id', deletePrivateChat)
 
 module.exports = router

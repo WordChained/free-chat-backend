@@ -72,8 +72,8 @@ const roomRoutes = require('./api/room/room-routes')
 const { socketService } = require('./services/socket-service')
 
 // routes
-const setupAsyncLocalStorage = require('./middlewares/setupAls.middleware')
-app.all('*', setupAsyncLocalStorage)
+// const setupAsyncLocalStorage = require('./middlewares/setupAls.middleware')
+// app.all('*', setupAsyncLocalStorage)
 
 // tip: check with app.use
 app.get('/api/setup-session', (req, res) => {

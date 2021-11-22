@@ -2,6 +2,8 @@ const logger = require('../../services/logger-service')
 const roomService = require('../room/room-service')
 // const socketService = require('../../services/socket-service')
 
+let checkPrivateDupMsg = ''
+let checkDupMsg = ''
 
 const getRooms = async (req, res) => {
     try {
@@ -83,8 +85,8 @@ const getMsgs = async (req, res) => {
 const getPrivateMsgs = async (req, res) => {
     try {
         const unfilteredMsgs = await roomService.getPrivateMsgs(req.params.id);
-        console.log('unfilteredMsgs:', unfilteredMsgs);
         const msgs = [...new Set(unfilteredMsgs)]//not sure i need this now
+        console.log('msgs:', msgs);
         res.send(msgs)
     } catch (err) {
         logger.error('Cannot get messages', err)
@@ -96,6 +98,12 @@ const getPrivateMsgs = async (req, res) => {
 const addMsg = async (req, res) => {
     try {
         const newMsg = req.body;
+        console.log('newMsg.ticket:', newMsg.ticket);
+        if (newMsg.ticket === checkDupMsg) {
+            console.log('%%% same message (' + newMsg.ticket + ') was submitted twice %%%');
+            return
+        }
+        checkDupMsg = newMsg.ticket
         const savedRoom = await roomService.addMsg(req.params.id, newMsg);
         res.send(savedRoom);
     } catch (err) {
@@ -106,9 +114,16 @@ const addMsg = async (req, res) => {
 }
 const addPrivateMsg = async (req, res) => {
     try {
-        console.log('times');
-        const newMsg = req.body;
+        console.log('times')
+        const newMsg = req.body
+        if (newMsg.ticket === checkPrivateDupMsg) {
+            console.log('%%% privateCHat same message (' + newMsg.ticket + ') was submitted twice %%%');
+            return
+        }
+        checkPrivateDupMsg = newMsg.ticket
+        console.log('why not?: &&&&&&&&&&&&&&&&', req.params.id, newMsg);
         const savedRoom = await roomService.addPrivateMsg(req.params.id, newMsg);
+        console.log('savedRoom:', savedRoom);
         res.send(savedRoom);
     } catch (err) {
         logger.error('Failed to add a message to this room', err)
@@ -191,6 +206,7 @@ const deleteMsg = async (req, res) => {
 
 const deletePrivateChat = async (req, res) => {
     const { chatId } = req.body
+    console.log('deletePrivateChat', chatId);
     try {
         await roomService.deletePrivateChat(chatId)
     } catch (err) {
