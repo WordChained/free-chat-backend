@@ -96,7 +96,7 @@ const socketService = (server, session) => {
                     socket.uid = uid
                     setTimeout(() => {
                         io.to(uid).emit('create-private-chat', uid)
-                        io.to(uid).emit('private-room-enter-msg', ('waiting for someone else to join! room' + socket.inRoom))
+                        io.to(uid).emit('private-room-enter-msg', ('waiting for someone else to join! room'))
                     }, 2000)
                 }
                 console.log('no other users right now', users);
@@ -110,7 +110,6 @@ const socketService = (server, session) => {
                 })
                 console.log('potentialMatches:', potentialMatches, 'total users:', users);
                 if (!potentialMatches.length) {//creating a room
-                    console.log('in users?(-1 = no):', users.find(user => user.uid === uid));
                     if (users.find(user => user.uid === uid) === -1) {
                         console.log('the user is not in users(lobby), so i\'ll add him!');
                         users.push({ uid, topics })
@@ -120,7 +119,7 @@ const socketService = (server, session) => {
                     socket.uid = uid
                     setTimeout(() => {
                         io.to(uid).emit('create-private-chat', uid)
-                        io.to(uid).emit('private-room-enter-msg', ('You are connected, waiting for another user. room' + socket.inRoom))
+                        io.to(uid).emit('private-room-enter-msg', ('You are connected, waiting for another user. room'))
                     }, 2000)
                 } else {//joining a room
                     const randNum = getRandomIntInclusive(0, potentialMatches.length - 1)
@@ -134,7 +133,7 @@ const socketService = (server, session) => {
                     socket.uid = uid
                     setTimeout(() => {
                         io.to(socket.inRoom).emit('create-private-chat', socket.inRoom)
-                        io.to(socket.inRoom).emit('private-room-enter-msg', ('You are connected, say hello! room' + socket.inRoom))
+                        io.to(socket.inRoom).emit('private-room-enter-msg', ('You are connected, say hello! room'))
                     }, 2000)
                 }
             }
@@ -160,8 +159,6 @@ const socketService = (server, session) => {
         })
         socket.on('private-room-msg', msg => {
             // logger.debug('topic:', socket.myTopic, 'msg:', msg)
-            //this emit is sent multiple times for some reason. theres probably a timeout
-            //not just this emit. any emit is sent the same amount of times when there's this unknown bug
             io.to(socket.inRoom).emit('private-room-add-msg', { msg, chatId: socket.inRoom })
         })
     })
