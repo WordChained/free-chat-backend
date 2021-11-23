@@ -96,7 +96,7 @@ const socketService = (server, session) => {
                     socket.uid = uid
                     setTimeout(() => {
                         io.to(uid).emit('create-private-chat', uid)
-                        io.to(uid).emit('private-room-enter-msg', ('waiting for someone else to join! room'))
+                        io.to(uid).emit('private-room-enter-msg', ('waiting for someone else to join!'))
                     }, 2000)
                 }
                 console.log('no other users right now', users);
@@ -119,7 +119,7 @@ const socketService = (server, session) => {
                     socket.uid = uid
                     setTimeout(() => {
                         io.to(uid).emit('create-private-chat', uid)
-                        io.to(uid).emit('private-room-enter-msg', ('You are connected, waiting for another user. room'))
+                        io.to(uid).emit('private-room-enter-msg', ('You are connected, waiting for another user.'))
                     }, 2000)
                 } else {//joining a room
                     const randNum = getRandomIntInclusive(0, potentialMatches.length - 1)
@@ -133,7 +133,7 @@ const socketService = (server, session) => {
                     socket.uid = uid
                     setTimeout(() => {
                         io.to(socket.inRoom).emit('create-private-chat', socket.inRoom)
-                        io.to(socket.inRoom).emit('private-room-enter-msg', ('You are connected, say hello! room'))
+                        io.to(socket.inRoom).emit('private-room-enter-msg', ('You are connected, say hello!'))
                     }, 2000)
                 }
             }
