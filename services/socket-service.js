@@ -30,6 +30,10 @@ const socketService = (server, session) => {
 
         socket.on('disconnect', () => {
             console.log('socket disconnected');
+            if (!socket.uid || users.length < 1) return
+            if (users.find(user => user.uid === socket.uid)) {
+                users.filter(user => user.uid !== socket.uid)
+            }
             //emit delete privateChat to the front and dispatch it?
             //if socket.inRoom ...
         })
@@ -85,7 +89,7 @@ const socketService = (server, session) => {
             io.to(topic).emit('users-in-room', numOfUsers[topic].length)
         })
         socket.on('join-private-room', ({ uid, topics }) => {
-            console.log('socket.inRoom first check:', socket.inRoom);
+            console.log('tried to join');
             if (socket.inRoom || users.find(u => u.uid === uid)) return
             console.log('joining room... users:', users)
             if (users.length < 1) {
@@ -99,8 +103,13 @@ const socketService = (server, session) => {
                         io.to(uid).emit('private-room-enter-msg', ('waiting for someone else to join!'))
                     }, 2000)
                 }
-                console.log('no other users right now', users);
-            } else {//if there are 2 or more people in the lobby
+                // }else{//youre already in the users array
+                //     const idx = users.findIndex(user=>user.uid === uid)
+                //     users[idx].topics = topics
+
+                // }
+                console.log('no other users right now,but this on ei just added:', users);
+            } else {//if there are 1 or more people in the lobby
                 const potentialMatches = users.filter(user => {
                     if (user.uid === uid) return false
                     return user.topics.some(userTopic => {
@@ -109,7 +118,8 @@ const socketService = (server, session) => {
                     })
                 })
                 console.log('potentialMatches:', potentialMatches, 'total users:', users);
-                if (!potentialMatches.length) {//creating a room
+                if (!potentialMatches.length) {//creating a room. means this curr user is the only one looking.
+                    console.log('creating a room');
                     if (users.find(user => user.uid === uid) === -1) {
                         console.log('the user is not in users(lobby), so i\'ll add him!');
                         users.push({ uid, topics })
@@ -122,6 +132,7 @@ const socketService = (server, session) => {
                         io.to(uid).emit('private-room-enter-msg', ('You are connected, waiting for another user.'))
                     }, 2000)
                 } else {//joining a room
+                    console.log('joining an already existing room');
                     const randNum = getRandomIntInclusive(0, potentialMatches.length - 1)
                     const randUser = potentialMatches[randNum]//one user from the potential list
                     console.log('potentialMatches[randNum]', potentialMatches[randNum]);
@@ -139,9 +150,14 @@ const socketService = (server, session) => {
             }
         })
         socket.on('leave-private-room', ({ uid, topics }) => {
-            if (!socket.inRoom || users.find(u => u.uid === uid)) return// no need to leave room if youre in the lobby. that means youre not in a room already!
+            console.log('tried to leave!');
+            // if (!socket.inRoom || users.find(u => u.uid === uid)) return// no need to leave room if youre in the lobby. that means youre not in a room already!
+            if (!socket.inRoom) return
             console.log('leaving room...', socket.inRoom);
-
+            if (users.find(u => u.uid === uid)) {
+                const idx = users.findIndex(user => user.uid === uid)
+                users.splice(idx, 1)
+            }
             socket.leave(socket.inRoom)
             // if (uid === socket.uid) io.to(socket.inRoom).emit('private-room-enter-msg', 'you left the room')
             socket.inRoom = null
