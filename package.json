@@ -8,8 +8,8 @@
     "node": "14.17.1"
   },
   "scripts": {
-    "start": "node server.js",
-    "server:prod": "node server.js",
+    "start": "node index.js",
+    "server:prod": "node index.js",
     "server:dev": "set NODE_ENV=development&&nodemon server.js"
   },
   "author": "Me",

@@ -51,8 +51,8 @@ if (process.env.NODE_ENV === 'production') {
         origin: '*',
         credentials: true
     }
-    // app.use(allowCrossDomain);
-    app.use(cors(corsOptions))
+    app.use(allowCrossDomain);
+    // app.use(cors(corsOptions))
 
 } else {
     const corsOptions = {
