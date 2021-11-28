@@ -40,14 +40,20 @@ if (process.env.NODE_ENV === 'production') {
     // // }
     // // app.use(cors(corsOptions))
     // console.log('__dirname:', __dirname);
+    var allowCrossDomain = function (req, res, next) {
+        res.header('Access-Control-Allow-Origin', '*');
+        res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+        res.header('Access-Control-Allow-Headers', 'Content-Type');
 
-    // origin: ['https://free-chat-1.herokuapp.com', 'https://free-chat-frontend.herokuapp.com'],
-
+        next();
+    }
     const corsOptions = {
-        origin: '*',
+        origin: ['https://free-chat-1.herokuapp.com', 'https://free-chat-frontend.herokuapp.com'],
         credentials: true
     }
+    app.use(allowCrossDomain);
     app.use(cors(corsOptions))
+
 } else {
     const corsOptions = {
         origin: ['http://127.0.0.1:8080', 'http://localhost:8080', 'http://localhost:3000',
@@ -59,14 +65,6 @@ if (process.env.NODE_ENV === 'production') {
     app.use(cors(corsOptions))
     // app.use(cors())
 }
-var allowCrossDomain = function (req, res, next) {
-    res.header('Access-Control-Allow-Origin', 'https://free-chat-frontend.herokuapp.com');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-
-    next();
-}
-app.use(allowCrossDomain);
 
 // app.use(timeout(360000))
 // function haltOnTimedout(req, res, next) {
