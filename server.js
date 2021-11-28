@@ -22,8 +22,8 @@ const session = expressSession({
     cookie: { secure: false }
 })
 
-// app.use(express.json())
-// app.use(session)
+app.use(express.json())
+app.use(session)
 
 
 
@@ -56,17 +56,16 @@ if (process.env.NODE_ENV === 'production') {
 
 } else {
     const corsOptions = {
-        origin: ['http://127.0.0.1:8080', 'http://localhost:8080', 'http://localhost:3000',
-            'http://localhost:8081', 'http://127.0.0.1:3030', 'http://127.0.0.1:3000', 'http://localhost:3030',
-            'http://192.168.1.17:8080/', 'http://192.168.1.22:8080',
-        ],
+        // origin: ['http://127.0.0.1:8080', 'http://localhost:8080', 'http://localhost:3000',
+        //     'http://localhost:8081', 'http://127.0.0.1:3030', 'http://127.0.0.1:3000', 'http://localhost:3030',
+        //     'http://192.168.1.17:8080/', 'http://192.168.1.22:8080',
+        // ],
+        origin: '*',
         credentials: true
     }
     app.use(cors(corsOptions))
     // app.use(cors())
 }
-app.use(express.json())
-app.use(session)
 
 // app.use(timeout(360000))
 // function haltOnTimedout(req, res, next) {
