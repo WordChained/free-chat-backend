@@ -22,8 +22,8 @@ const session = expressSession({
     cookie: { secure: false }
 })
 
-app.use(express.json())
-app.use(session)
+// app.use(express.json())
+// app.use(session)
 
 
 
@@ -48,7 +48,7 @@ if (process.env.NODE_ENV === 'production') {
         next();
     }
     const corsOptions = {
-        origin: ['https://free-chat-1.herokuapp.com', 'https://free-chat-frontend.herokuapp.com'],
+        origin: '*',
         credentials: true
     }
     app.use(allowCrossDomain);
@@ -65,6 +65,8 @@ if (process.env.NODE_ENV === 'production') {
     app.use(cors(corsOptions))
     // app.use(cors())
 }
+app.use(express.json())
+app.use(session)
 
 // app.use(timeout(360000))
 // function haltOnTimedout(req, res, next) {
