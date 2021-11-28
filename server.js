@@ -30,8 +30,8 @@ app.use(session)
 // app.use(express.static('build'))
 
 // console.log('publicPath:', publicPath);
+console.log('process.env.NODE_ENV:', process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'production') {
-    console.log('process.env.NODE_ENV:', process.env.NODE_ENV);
     // app.use(express.static(path.resolve(__dirname, 'build')))
     // app.use(express.static(publicPath))
     // // const corsOptions = {
@@ -55,7 +55,6 @@ if (process.env.NODE_ENV === 'production') {
     app.use(cors(corsOptions))
 
 } else {
-    console.log('process.env.NODE_ENV:', process.env.NODE_ENV);
     const corsOptions = {
         // origin: ['http://127.0.0.1:8080', 'http://localhost:8080', 'http://localhost:3000',
         //     'http://localhost:8081', 'http://127.0.0.1:3030', 'http://127.0.0.1:3000', 'http://localhost:3030',
