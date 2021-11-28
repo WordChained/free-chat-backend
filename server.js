@@ -41,9 +41,10 @@ if (process.env.NODE_ENV === 'production') {
     // // app.use(cors(corsOptions))
     // console.log('__dirname:', __dirname);
 
+    // origin: ['https://free-chat-1.herokuapp.com', 'https://free-chat-frontend.herokuapp.com'],
 
     const corsOptions = {
-        origin: ['https://free-chat-1.herokuapp.com', 'https://free-chat-frontend.herokuapp.com'],
+        origin: '*',
         credentials: true
     }
     app.use(cors(corsOptions))
